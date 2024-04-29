@@ -1,0 +1,17 @@
+{
+  "hash": "45bed7e1bdef20badd28efe8c06e7c61",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"dashboard_alpha\"\nformat: dashboard\neditor_options: \n  chunk_output_type: console\n---\n\n::: {.cell}\n\n:::\n\n::: {.cell}\n\n:::\n\n::: {.cell}\n\n:::\n\n::: {.cell}\n\n:::\n\n\n#  {.sidebar}\n\nThis dashboard displays statistics for:\n\n|              |                     |\n|--------------|---------------------|\n| **Hospital** | Grey Sloan Memorial |\n| **Unit**     | Labor and Delivery  |\n| **Month**    | Apr 2024   |\n\n------------------------------------------------------------------------\n\nIn Apr 2024 the staff breakdown in the unit was as follows:\n\n|                          |     |\n|--------------------------|-----|\n| **Attending physicians** |  14 |\n| **Residents**            |  21 |\n| **Nurses**               |  12 |\n\n------------------------------------------------------------------------\n\n::: {.callout-note collapse=\"true\"}\n## Disclaimer\n\nThis is a fictional hospital. The data are simulated based on realistic birth characteristics and risk factors from [this report by the CDC](https://www.cdc.gov/nchs/data/nvsr/nvsr72/nvsr72-01.pdf).\n:::\n\n# All\n\n\n::: {.cell}\n\n:::\n\n\n## Row {height=\"20%\"}\n\n\n::: {.cell content='valuebox' title='Total Pilots'}\n::: {.cell-output .cell-output-stdout}\n\n```\n$icon\n[1] \"globe\"\n\n$color\n[1] \"primary\"\n\n$value\n[1] 3264\n```\n\n\n:::\n:::\n\n::: {.cell content='valuebox' title='Percent PIC'}\n::: {.cell-output .cell-output-stdout}\n\n```\n$icon\n[1] \"person-lines-fill\"\n\n$color\n[1] \"secondary\"\n\n$value\n[1] \"64.6%\"\n```\n\n\n:::\n:::\n\n::: {.cell content='valuebox' title='Percent SIC'}\n::: {.cell-output .cell-output-stdout}\n\n```\n$icon\n[1] \"person-lines-fill\"\n\n$color\n[1] \"primary\"\n\n$value\n[1] \"35.4%\"\n```\n\n\n:::\n:::\n\n\n## Row {height=\"80%}\n\n### Column {Width=\"50%}\n\n\n::: {.cell title='New Hires'}\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-9-1.png){width=768}\n:::\n:::\n\n\n### Column {Width=\"50%}\n\n\n::: {.cell title='Total Pilots'}\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-10-1.png){width=768}\n:::\n:::",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
