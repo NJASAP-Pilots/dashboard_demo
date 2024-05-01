@@ -1,4 +1,11 @@
+library(tidyverse)
+library(readxl)
+library(scales)
+library(DT)
+library(gt)
 library(glue)
+library(glue)
+library(plotly)
 
 
 ### Import and merge seniority lists ###
@@ -20,13 +27,42 @@ read_snrty_files <- function(file){
   imported_snrty
 }
 
+### ESPN Theme ###
+
+gt_theme_espn <- function(data, ...){
+  data %>% 
+    opt_all_caps()  %>%
+    opt_table_font(
+      font = list(
+        google_font("Lato"),
+        default_fonts()
+      )
+    )  %>% 
+    opt_row_striping() %>% 
+    tab_options(
+      row.striping.background_color = "#BFCDDF",
+      table_body.hlines.color = "#f6f7f7",
+      source_notes.font.size = 12,
+      table.font.size = 16,
+      #table.width = px(700),
+      heading.align = "left",
+      heading.title.font.size = 24,
+      table.border.top.color = "transparent",
+      table.border.top.width = px(3),
+      data_row.padding = px(7),
+      ...
+    ) 
+}
+
 ### Bind files by folder ###
+
+# rm(merged_seniority)
 
 merged_seniority <- map_dfr(.x = imported_seniority, .f = read_snrty_files)
 
 ### Seniority Clean-up ###
 
-seniority <- merged_snrty %>% 
+seniority <- merged_seniority %>% 
   rename_all(tolower) %>% 
   select(cmi, co_snrty = `company seniority`, snrty = `union seniority`, 4:7,
          equip_lock = `equip lock`, 9:12, tsp_elect = `tsp election`,
@@ -49,7 +85,7 @@ doh_12m_lb <- add_with_rollback(max_doh_floor,
                                 roll_to_first = T)
 ### PLOT ###
 
-seniority %>% 
+pilots_hired <- seniority %>% 
   select(cmi, doh, year_month, published) %>% 
   mutate(moh = str_pad(month(doh),2,pad = "0"),
          ymh = glue("{year(doh)}-{moh}"),
@@ -59,21 +95,25 @@ seniority %>%
   count(ymh) %>% 
   ggplot(aes(x = ymh, y = n)) +
   geom_line(aes(group = "ymh"))+
-  geom_point(size = 3)+
-  geom_point(size = 6, shape = "circle open")+
+  geom_point(size = 3, color = "blue", alpha = 0.7)+
+  # geom_point(size = 6, shape = "circle open")+
   theme_bw()+
   labs(x = NULL,
        y = "Count")
 
-seniority %>% 
+ggplotly(pilots_hired, tooltip = "n")
+
+total_pilots <- seniority %>% 
   select(cmi, doh, year_month, published) %>% 
   filter(published > pub_12m_lb) %>% 
   select(cmi, year_month) %>% 
   count(year_month) %>% 
   ggplot(aes(x = year_month, y = n)) +
   geom_line(aes(group = "year_month"))+
-  geom_point(size = 3)+
-  geom_point(size = 6, shape = "circle open")+
+  geom_point(size = 3, color = "blue", alpha = 0.7)+
+  # geom_point(size = 6, shape = "circle open")+
   theme_bw()+
   labs(x = NULL,
        y = "Count")
+
+ggplotly(total_pilots)

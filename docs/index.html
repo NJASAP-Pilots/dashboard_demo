@@ -24,7 +24,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -48,11 +47,11 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-dashboard/components.js"></script>
 <link href="site_libs/quarto-dashboard/datatables.min.css" rel="stylesheet" kdttablesentinel="true">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -74,42 +73,26 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
 
 
 </head>
 
-<body class="quarto-dashboard nav-fixed dashboard-fill dashboard-sidebar fullcontent">
+<body class="quarto-dashboard dashboard-fill dashboard-sidebar fullcontent">
 
-
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">dashboard_alpha</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-          <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
 <header id="quarto-dashboard-header">
 <nav class="navbar navbar-expand-md slim" data-bs-theme="dark">
   <div class="navbar-container container-fluid">
@@ -119,18 +102,19 @@ ul.task-list li input[type="checkbox"] {
 
 
     <div class="navbar-brand-container">       
-
+    <a href="#"><img src="images/skype_icon.png" alt="" class="navbar-logo d-inline-block"></a>
       <div class="navbar-title">
         <div class="navbar-title-text"><a href="#">dashboard_alpha</a></div>
         
         
       </div>
     </div>
-<div id="dashboard-collapse" class="navbar-collapse collapse"><ul class="navbar-nav navbar-nav-scroll me-auto" role="tablist"><li class="nav-item" role="presentation"><a id="tab-all" class="nav-link active" data-bs-toggle="tab" role="tab" data-bs-target="#all" data-scrolling="false" href="#all" aria-controls="all" aria-selected="true"><span class="nav-link-text">All</span></a></li></ul></div></div>
+<div id="dashboard-collapse" class="navbar-collapse collapse"><ul class="navbar-nav navbar-nav-scroll me-auto" role="tablist"><li class="nav-item" role="presentation"><a id="tab-all" class="nav-link active" data-bs-toggle="tab" role="tab" data-bs-target="#all" data-scrolling="false" href="#all" aria-controls="all" aria-selected="true"><span class="nav-link-text">All</span></a></li><li class="nav-item" role="presentation"><a id="tab-fleet-stats" class="nav-link" data-bs-toggle="tab" role="tab" data-bs-target="#fleet-stats" data-scrolling="false" href="#fleet-stats" aria-controls="fleet-stats" aria-selected="false"><span class="nav-link-text">Fleet Stats</span></a></li></ul></div></div>
 </nav>
-</header></header>
+</header>
+<div id="quarto-search-results"></div>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-layout-custom page-navbar quarto-dashboard-content bslib-gap-spacing html-fill-container bslib-page-fill quarto-dashboard-pages dashboard-sidebar-container">
+<div id="quarto-content" class="quarto-container page-layout-custom quarto-dashboard-content bslib-gap-spacing html-fill-container bslib-page-fill quarto-dashboard-pages dashboard-sidebar-container">
 <!-- sidebar -->
 <!-- margin-sidebar -->
 <!-- main -->
@@ -139,7 +123,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="tab-content bslib-grid html-fill-item html-fill-container" style="display: grid; grid-template-columns: minmax(3em, 1fr);
 grid-auto-rows: minmax(0, 1fr);">
 <div id="all" class="dashboard-page tab-pane show active html-fill-item html-fill-container" data-orientation="rows" aria-labelledby="tab-all">
-<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, 20fr) minmax(3em, NaNfr); grid-auto-columns: minmax(0, 1fr);">
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, 20fr) minmax(3em, NaNfr) minmax(3em, NaNfr); grid-auto-columns: minmax(0, 1fr);">
 <div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr);
 grid-auto-rows: minmax(0, 1fr);">
 <div class="card valuebox cell html-fill-item html-fill-container bslib-card bslib-value-box bg-primary showcase-left-center" data-bslib-card-init="" data-require-bs-caller="card()">
@@ -192,14 +176,14 @@ Percent SIC
 </div>
 <script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
 </div>
-<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr) minmax(3em, 1fr);
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr);
 grid-auto-rows: minmax(0, 1fr);">
-<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, 1fr); grid-auto-columns: minmax(0, 1fr);">
-<div class="card cell html-fill-item html-fill-container bslib-card" data-title="New Hires" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
-<div class="card-header"><div class="card-title html-fill-item html-fill-container">New Hires</div></div>
+<div class="card cell html-fill-item html-fill-container bslib-card" data-title="Total Pilots" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-header"><div class="card-title html-fill-item html-fill-container">Total Pilots</div></div>
 <div class="card-body html-fill-item html-fill-container">
 <div class="cell-output-display html-fill-item html-fill-container">
-<img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-dashboard-img-contain">
+<div class="plotly html-widget html-fill-item html-fill-container" id="htmlwidget-72e0948c2afd2a6f9c69" style="width:100%;height:406px;"></div>
+<script type="application/json" data-for="htmlwidget-72e0948c2afd2a6f9c69">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13],"y":[2936,2971,3014,3076,3126,3157,3180,3225,3256,3193,3207,3262,3264],"text":["Year Month: 2023-04<br />Total Pilots: 2936","Year Month: 2023-05<br />Total Pilots: 2971","Year Month: 2023-06<br />Total Pilots: 3014","Year Month: 2023-07<br />Total Pilots: 3076","Year Month: 2023-08<br />Total Pilots: 3126","Year Month: 2023-09<br />Total Pilots: 3157","Year Month: 2023-10<br />Total Pilots: 3180","Year Month: 2023-11<br />Total Pilots: 3225","Year Month: 2023-12<br />Total Pilots: 3256","Year Month: 2024-01<br />Total Pilots: 3193","Year Month: 2024-02<br />Total Pilots: 3207","Year Month: 2024-03<br />Total Pilots: 3262","Year Month: 2024-04<br />Total Pilots: 3264"],"type":"scatter","mode":"lines+markers","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(59,142,222,1)","opacity":0.69999999999999996,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(59,142,222,1)"}},"frame":null}],"layout":{"margin":{"t":27.68949771689498,"r":7.3059360730593621,"b":27.031963470319642,"l":48.949771689497723},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,13.6],"tickmode":"array","ticktext":["2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13],"categoryorder":"array","categoryarray":["2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[2919.5999999999999,3280.4000000000001],"tickmode":"array","ticktext":["3000","3100","3200"],"tickvals":[3000,3100,3200],"categoryorder":"array","categoryarray":["3000","3100","3200"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"1486923e8b164":{"x":{},"y":{},"text":{},"type":"scatter"},"148691d62ea7":{"x":{},"y":{},"text":{}}},"cur_data":"1486923e8b164","visdat":{"1486923e8b164":["function (y) ","x"],"148691d62ea7":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
@@ -208,12 +192,586 @@ grid-auto-rows: minmax(0, 1fr);">
         <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
     </span>
 </bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
-</div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, 1fr); grid-auto-columns: minmax(0, 1fr);">
-<div class="card cell html-fill-item html-fill-container bslib-card" data-title="Total Pilots" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
-<div class="card-header"><div class="card-title html-fill-item html-fill-container">Total Pilots</div></div>
+</div>
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr);
+grid-auto-rows: minmax(0, 1fr);">
+<div class="card cell html-fill-item html-fill-container bslib-card" data-title="New Hires" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-header"><div class="card-title html-fill-item html-fill-container">New Hires</div></div>
 <div class="card-body html-fill-item html-fill-container">
 <div class="cell-output-display html-fill-item html-fill-container">
-<img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-dashboard-img-contain">
+<div class="plotly html-widget html-fill-item html-fill-container" id="htmlwidget-a66328d1677354d463f3" style="width:100%;height:406px;"></div>
+<script type="application/json" data-for="htmlwidget-a66328d1677354d463f3">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13],"y":[57,45,77,91,64,49,58,40,45,55,53,53,28],"text":["Year Month: 2023-04<br />Pilots Hired: 57","Year Month: 2023-05<br />Pilots Hired: 45","Year Month: 2023-06<br />Pilots Hired: 77","Year Month: 2023-07<br />Pilots Hired: 91","Year Month: 2023-08<br />Pilots Hired: 64","Year Month: 2023-09<br />Pilots Hired: 49","Year Month: 2023-10<br />Pilots Hired: 58","Year Month: 2023-11<br />Pilots Hired: 40","Year Month: 2023-12<br />Pilots Hired: 45","Year Month: 2024-01<br />Pilots Hired: 55","Year Month: 2024-02<br />Pilots Hired: 53","Year Month: 2024-03<br />Pilots Hired: 53","Year Month: 2024-04<br />Pilots Hired: 28"],"type":"scatter","mode":"lines+markers","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(59,142,222,1)","opacity":0.69999999999999996,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(59,142,222,1)"}},"frame":null}],"layout":{"margin":{"t":27.68949771689498,"r":7.3059360730593621,"b":27.031963470319642,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,13.6],"tickmode":"array","ticktext":["2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13],"categoryorder":"array","categoryarray":["2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[24.850000000000001,94.150000000000006],"tickmode":"array","ticktext":["40","60","80"],"tickvals":[40,60,80],"categoryorder":"array","categoryarray":["40","60","80"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"14869550e9136":{"x":{},"y":{},"text":{},"type":"scatter"},"148692f5f9bda":{"x":{},"y":{},"text":{}}},"cur_data":"14869550e9136","visdat":{"14869550e9136":["function (y) ","x"],"148692f5f9bda":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
+    <template>Expand</template>
+    <span class="bslib-full-screen-enter badge rounded-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
+    </span>
+</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
+</div>
+</div>
+</div><div id="fleet-stats" class="dashboard-page tab-pane grid-skip html-fill-item html-fill-container" data-orientation="rows" aria-labelledby="tab-fleet-stats">
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, 1fr) minmax(3em, 1fr); grid-auto-columns: minmax(0, 1fr);">
+<div class="card cell html-fill-item html-fill-container bslib-card" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-body html-fill-item html-fill-container">
+<div class="cell-output-display html-fill-item html-fill-container">
+<div class="html-fill-item html-fill-container">
+<div id="gfjtuytqzf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;" class="html-fill-item html-fill-container">
+<style>@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#gfjtuytqzf table {
+  font-family: Lato, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gfjtuytqzf thead, #gfjtuytqzf tbody, #gfjtuytqzf tfoot, #gfjtuytqzf tr, #gfjtuytqzf td, #gfjtuytqzf th {
+  border-style: none;
+}
+
+#gfjtuytqzf p {
+  margin: 0;
+  padding: 0;
+}
+
+#gfjtuytqzf .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: rgba(255, 255, 255, 0);
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gfjtuytqzf .gt_title {
+  color: #333333;
+  font-size: 24px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gfjtuytqzf .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gfjtuytqzf .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gfjtuytqzf .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gfjtuytqzf .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gfjtuytqzf .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gfjtuytqzf .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gfjtuytqzf .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gfjtuytqzf .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gfjtuytqzf .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gfjtuytqzf .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gfjtuytqzf .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gfjtuytqzf .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #F6F7F7;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gfjtuytqzf .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfjtuytqzf .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gfjtuytqzf .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gfjtuytqzf .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gfjtuytqzf .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfjtuytqzf .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gfjtuytqzf .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfjtuytqzf .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_striped {
+  background-color: #BFCDDF;
+}
+
+#gfjtuytqzf .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfjtuytqzf .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gfjtuytqzf .gt_sourcenote {
+  font-size: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfjtuytqzf .gt_left {
+  text-align: left;
+}
+
+#gfjtuytqzf .gt_center {
+  text-align: center;
+}
+
+#gfjtuytqzf .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gfjtuytqzf .gt_font_normal {
+  font-weight: normal;
+}
+
+#gfjtuytqzf .gt_font_bold {
+  font-weight: bold;
+}
+
+#gfjtuytqzf .gt_font_italic {
+  font-style: italic;
+}
+
+#gfjtuytqzf .gt_super {
+  font-size: 65%;
+}
+
+#gfjtuytqzf .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gfjtuytqzf .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gfjtuytqzf .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gfjtuytqzf .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gfjtuytqzf .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gfjtuytqzf .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gfjtuytqzf .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border"><em>NJASAP PIC / SIC Ratio by Fleet</em><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+</tr>
+<tr class="odd gt_col_headings gt_spanner_row">
+<th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th colspan="3" id="Count" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="colgroup"><span class="gt_column_spanner">Count</span></th>
+<th rowspan="2" id="% PIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">% PIC</th>
+<th rowspan="2" id="% SIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">% SIC</th>
+</tr>
+<tr class="header gt_col_headings">
+<th id="PIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">PIC</th>
+<th id="SIC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">SIC</th>
+<th id="total" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">total</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td id="stub_1_1" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">CE-680AS</td>
+<td class="gt_row gt_right" headers="stub_1_1 PIC">623</td>
+<td class="gt_row gt_right" headers="stub_1_1 SIC">357</td>
+<td class="gt_row gt_right" headers="stub_1_1 total" style="font-style: italic; font-weight: bold">980</td>
+<td class="gt_row gt_right" headers="stub_1_1 pct_PIC">63.6</td>
+<td class="gt_row gt_right" headers="stub_1_1 pct_SIC">36.4</td>
+</tr>
+<tr class="even">
+<td id="stub_1_2" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">EMB-505S</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_2 PIC">324</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_2 SIC">272</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_2 total" style="font-style: italic; font-weight: bold">596</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_2 pct_PIC">54.4</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_2 pct_SIC">45.6</td>
+</tr>
+<tr class="odd">
+<td id="stub_1_3" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">CL-350S</td>
+<td class="gt_row gt_right" headers="stub_1_3 PIC">241</td>
+<td class="gt_row gt_right" headers="stub_1_3 SIC">165</td>
+<td class="gt_row gt_right" headers="stub_1_3 total" style="font-style: italic; font-weight: bold">406</td>
+<td class="gt_row gt_right" headers="stub_1_3 pct_PIC">59.4</td>
+<td class="gt_row gt_right" headers="stub_1_3 pct_SIC">40.6</td>
+</tr>
+<tr class="even">
+<td id="stub_1_4" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">GL6000S</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_4 PIC">224</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_4 SIC">59</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_4 total" style="font-style: italic; font-weight: bold">283</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_4 pct_PIC">79.2</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_4 pct_SIC">20.8</td>
+</tr>
+<tr class="odd">
+<td id="stub_1_5" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">CL-650S</td>
+<td class="gt_row gt_right" headers="stub_1_5 PIC">218</td>
+<td class="gt_row gt_right" headers="stub_1_5 SIC">18</td>
+<td class="gt_row gt_right" headers="stub_1_5 total" style="font-style: italic; font-weight: bold">236</td>
+<td class="gt_row gt_right" headers="stub_1_5 pct_PIC">92.4</td>
+<td class="gt_row gt_right" headers="stub_1_5 pct_SIC">7.6</td>
+</tr>
+<tr class="even">
+<td id="stub_1_6" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">CE-560XL</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_6 PIC">168</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_6 SIC">71</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_6 total" style="font-style: italic; font-weight: bold">239</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_6 pct_PIC">70.3</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_6 pct_SIC">29.7</td>
+</tr>
+<tr class="odd">
+<td id="stub_1_7" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">CE-700</td>
+<td class="gt_row gt_right" headers="stub_1_7 PIC">151</td>
+<td class="gt_row gt_right" headers="stub_1_7 SIC">130</td>
+<td class="gt_row gt_right" headers="stub_1_7 total" style="font-style: italic; font-weight: bold">281</td>
+<td class="gt_row gt_right" headers="stub_1_7 pct_PIC">53.7</td>
+<td class="gt_row gt_right" headers="stub_1_7 pct_SIC">46.3</td>
+</tr>
+<tr class="even">
+<td id="stub_1_8" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">CE-680</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_8 PIC">106</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_8 SIC">57</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_8 total" style="font-style: italic; font-weight: bold">163</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_8 pct_PIC">65.0</td>
+<td class="gt_row gt_right gt_striped" headers="stub_1_8 pct_SIC">35.0</td>
+</tr>
+<tr class="odd">
+<td id="stub_1_9" class="gt_row gt_left gt_stub" data-quarto-table-cell-role="th" scope="row">GL7500</td>
+<td class="gt_row gt_right" headers="stub_1_9 PIC">49</td>
+<td class="gt_row gt_right" headers="stub_1_9 SIC">22</td>
+<td class="gt_row gt_right" headers="stub_1_9 total" style="font-style: italic; font-weight: bold">71</td>
+<td class="gt_row gt_right" headers="stub_1_9 pct_PIC">69.0</td>
+<td class="gt_row gt_right" headers="stub_1_9 pct_SIC">31.0</td>
+</tr>
+</tbody><tfoot class="gt_footnotes">
+<tr class="even">
+<td colspan="6" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> <em>Data current as of 2024-4 NJASAP Pilot Seniority List</em></td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
+    <template>Expand</template>
+    <span class="bslib-full-screen-enter badge rounded-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
+    </span>
+</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
+<div class="card cell html-fill-item html-fill-container bslib-card" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-body html-fill-item html-fill-container">
+<div class="cell-output-display html-fill-item html-fill-container">
+<div class="datatables html-widget html-fill-item html-fill-container" id="htmlwidget-0b9c6e68ca561b0eb536" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0b9c6e68ca561b0eb536">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9"],["CE-680AS","EMB-505S","CL-350S","GL6000S","CL-650S","CE-560XL","CE-700","CE-680","GL7500"],[623,324,241,224,218,168,151,106,49],[357,272,165,59,18,71,130,57,22],[980,596,406,283,236,239,281,163,71],[63.6,54.4,59.4,79.2,92.40000000000001,70.3,53.7,65,69],[36.4,45.6,40.6,20.8,7.599999999999994,29.7,46.3,35,31]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>aircraft<\/th>\n      <th>PIC<\/th>\n      <th>SIC<\/th>\n      <th>total<\/th>\n      <th>pct_PIC<\/th>\n      <th>pct_SIC<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"bPaginate":false,"dom":"ifrt","language":{"info":"Showing _TOTAL_ entries"},"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"aircraft","targets":1},{"name":"PIC","targets":2},{"name":"SIC","targets":3},{"name":"total","targets":4},{"name":"pct_PIC","targets":5},{"name":"pct_SIC","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
@@ -230,10 +788,9 @@ grid-auto-rows: minmax(0, 1fr);">
 </div>
 </div>
 </div>
-</div>
-</div>
 </div></div><aside id="bslib-sidebar-1" class="sidebar html-fill-container html-fill-item"><div class="html-fill-container html-fill-item">
-<p>This dashboard displays statistics for:</p>
+<p><br>
+This dashboard displays statistics for:</p>
 <table class="table">
 <tbody>
 <tr class="odd">

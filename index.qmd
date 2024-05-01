@@ -1,6 +1,7 @@
 ---
 title: "dashboard_alpha"
 format: dashboard
+logo: images/skype_icon.png
 editor_options: 
   chunk_output_type: console
 ---
@@ -15,6 +16,7 @@ library(scales)
 library(DT)
 library(gt)
 library(glue)
+library(plotly)
 # theme_set(theme_minimal(base_size = 24, base_family = "Atkinson Hyperlegible"))
 ```
 
@@ -88,6 +90,7 @@ time_period <- time_period_in[1]
 
 #  {.sidebar}
 
+\
 This dashboard displays statistics for:
 
 |              |                     |
@@ -200,14 +203,37 @@ list(
 )
 ```
 
-## Row {height="80%}
+## Row {height="40%}
 
-### Column {Width="50%}
+```{r}
+#| title: "Total Pilots"
+
+total_pilots <- seniority %>% 
+  select(cmi, doh, year_month, published) %>% 
+  filter(published > pub_12m_lb) %>% 
+  select(cmi, year_month) %>% 
+  count(year_month) %>% 
+  ggplot(aes(x = year_month,
+             y = n,
+             text = glue("Year Month: {year_month}\nTotal Pilots: {n}")
+             )
+         ) +
+  geom_line(aes(group = "year_month"))+
+  geom_point(size = 3, color = "#3b8ede", alpha = 0.7)+
+  # geom_point(size = 6, shape = "circle open")+
+  theme_bw()+
+  labs(x = NULL,
+       y = "Count")
+
+ggplotly(total_pilots, tooltip = "text")
+```
+
+## Row {height="40%}
 
 ```{r}
 #| title: "New Hires"
 
-seniority %>% 
+hired_pilots <- seniority %>% 
   select(cmi, doh, year_month, published) %>% 
   mutate(moh = str_pad(month(doh),2,pad = "0"),
          ymh = glue("{year(doh)}-{moh}"),
@@ -215,30 +241,386 @@ seniority %>%
   filter(doh > doh_12m_lb & published > max_pub_floor) %>% 
   select(cmi, ymh) %>% 
   count(ymh) %>% 
-  ggplot(aes(x = ymh, y = n)) +
+  ggplot(aes(x = ymh,
+             y = n,
+             text = glue("Year Month: {ymh}\nPilots Hired: {n}")
+             )
+         ) +
   geom_line(aes(group = "ymh"))+
-  geom_point(size = 3)+
-  geom_point(size = 6, shape = "circle open")+
+  geom_point(size = 3,
+             color = "#3b8ede",
+             alpha = 0.7)+
+  # geom_point(size = 6, shape = "circle open")+
   theme_bw()+
   labs(x = NULL,
        y = "Count")
+
+ggplotly(hired_pilots, tooltip = "text")
 ```
 
-### Column {Width="50%}
+# Fleet Stats
 
 ```{r}
-#| title: "Total Pilots"
+#| label: all-values
+#| results: hide
 
-seniority %>% 
-  select(cmi, doh, year_month, published) %>% 
-  filter(published > pub_12m_lb) %>% 
-  select(cmi, year_month) %>% 
-  count(year_month) %>% 
-  ggplot(aes(x = year_month, y = n)) +
-  geom_line(aes(group = "year_month"))+
-  geom_point(size = 3)+
-  geom_point(size = 6, shape = "circle open")+
-  theme_bw()+
-  labs(x = NULL,
-       y = "Count")
+### ESPN Theme ###
+
+gt_theme_espn <- function(data, ...){
+  data %>% 
+    opt_all_caps()  %>%
+    opt_table_font(
+      font = list(
+        google_font("Lato"),
+        default_fonts()
+      )
+    )  %>% 
+    opt_row_striping() %>% 
+    tab_options(
+      row.striping.background_color = "#BFCDDF",
+      table_body.hlines.color = "#f6f7f7",
+      source_notes.font.size = 12,
+      table.font.size = 16,
+      #table.width = px(700),
+      heading.align = "left",
+      heading.title.font.size = 24,
+      table.border.top.color = "transparent",
+      table.border.top.width = px(3),
+      data_row.padding = px(7),
+      ...
+    ) 
+}
+
+### Fleet Ratios ###
+
+tfleet_ratio <- seniority %>%
+  filter(published > max_pub_floor) %>% 
+  select(aircraft, seat) %>% 
+  filter(! aircraft %in% c("G-V", "BE-400A", "CE-560", "HS-125-800XPC")) %>% 
+  group_by(aircraft, seat) %>% 
+  drop_na() %>% 
+  count() %>% 
+  pivot_wider(names_from = seat, values_from = n) %>% 
+  mutate(total = PIC + SIC, pct_PIC = round(PIC/total*100,1), pct_SIC = 100-pct_PIC) %>% 
+  arrange(desc(PIC)) %>% 
+  ungroup()
+
+# view(tfleet_ratio)
+
+
+### Create Table ###
+
+tfleet_ratio %>% 
+  gt(rowname_col = "aircraft") %>% 
+  tab_header(title = md("*NJASAP PIC / SIC Ratio by Fleet*"),
+          #   subtitle = md()
+             )%>% 
+  gt_theme_espn() %>% 
+  cols_label(
+    pct_PIC = "% PIC",
+    pct_SIC = "% SIC",
+  ) %>% 
+  tab_spanner("Count", columns = c(1:4)) %>% 
+  tab_style(
+    style = list(
+      cell_text(style = "italic"),
+      cell_text(weight = "bold")
+    ),
+    locations = cells_body(
+      columns = total
+    )
+  ) %>%
+  sub_missing(
+    columns = everything(),
+    rows = everything(),
+    missing_text = "--"
+  ) %>% 
+  cols_width(everything() ~px(75)) %>% 
+  tab_footnote(footnote = md(glue("*Data current as of {year(max_pub_floor)}-{month(max_pub_floor)} NJASAP Pilot Seniority List*")
+                             ),
+               locations = cells_title(groups = "title"),
+               placement = "right")
+```
+
+```{r}
+#| title: "Fleet Ratio"
+
+tfleet_ratio %>% 
+  datatable(class = 'order-column display')
+```
+
+# Duty Summary
+
+```{r}
+#| title: "Duty Summary"
+#| #| results: hide
+
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(readxl)
+library("scales")
+library(lubridate)
+library(glue)
+library(cellranger)
+library(gt)
+
+### Import and merge seniority lists ###
+
+imported_folder_2023 <- dir(path = "~/OneDrive - NJASAP/Documents/Seniority Related/Seniority List - Union/2023", 
+                            full.names = T,
+                            pattern = "\\d\\d\\d[34]-\\d\\d\\sSeniorityList_UnionCopy.xlsx"
+                            )
+
+imported_folder_2024 <- dir(path = "~/OneDrive - NJASAP/Documents/Seniority Related/Seniority List - Union/2024", 
+                            full.names = T,
+                            pattern = "\\d\\d\\d[34]-\\d\\d\\sSeniorityList_UnionCopy.xlsx"
+                            )
+imp_folder_dsr <- dir("~/OneDrive - NJASAP/Documents/Duty Status Reports DSR/Power Query Method TEST/DSR Montly RAW",
+                             full.names = T,
+                             pattern = "\\d\\d\\d[34]-\\d+\\sPilot Duty Summary.*\\.xlsx")
+
+### Create Function to build list of files ###
+
+read_snrty_files <- function(file){
+  if(is.na(file)) stop("no file path")
+  imported_snrty <- read_excel(file,
+                               sheet = "UNION_EXCEL_FILE",
+                               range = cell_cols("A:P")
+                               )
+  imported_snrty
+}
+
+read_dsr_files <- function(file){
+  if(is.na(file)) stop("no file path")
+  imported_dsr <- read_excel(file,
+                               sheet = "Pilot Duty Report",
+                               range = cell_cols(1:13)
+  )
+  imported_dsr
+}
+
+### Bind files by folder ###
+
+merged_seniority_list_2023 <- map_dfr(.x = imported_folder_2023, .f = read_snrty_files)
+merged_seniority_list_2024 <- map_dfr(.x = imported_folder_2024, .f = read_snrty_files)
+
+merged_dsr <- map_dfr(.x = imp_folder_dsr, .f = read_dsr_files)
+
+merged_snrty <- bind_rows(merged_seniority_list_2023, merged_seniority_list_2024)
+
+### Seniority Clean-up ###
+
+clean_merged_snrty <- merged_snrty %>% 
+  rename_all(tolower) %>% 
+  select(cmi, co_snrty = `company seniority`, snrty = `union seniority`, 4:7,
+         equip_lock = `equip lock`, 9:12, tsp_elect = `tsp election`,
+         year_month = `year month`, published) %>% 
+  mutate(doh = ymd(doh), equip_lock = ymd(equip_lock), published = ymd(published),
+         yos_r = ceiling( as.duration(doh %--% published) / dyears(1) )
+         )
+
+# glimpse(clean_merged_snrty)
+
+### Table Prep -- Seniority List ###
+
+# Required Dates
+
+latest_published_date <- max(clean_merged_snrty$published)
+latest_published_floor <- lubridate::floor_date(latest_published_date, "month")
+m12_month_lb <- add_with_rollback(latest_published_floor,
+                                 months(-11),
+                                 roll_to_first = F)
+
+### Filtered for latest seniority list ###
+
+latest_snrty_list <- clean_merged_snrty %>% 
+  filter( published > latest_published_floor)
+
+### DSR Clean-up ###
+
+clean_merged_dsr <- merged_dsr %>% 
+  rename_all(tolower) %>% 
+  select(1:2, sen_status = `sen status`, 4:6, schedule = `sched type`, duty_code = `duty code`,
+         rest, duty_time = `duty time`, end_loc = `end loc`, icao_reg = `icao region`, country) %>% 
+  mutate(date = ymd(date),
+         rest = ifelse(rest == "24+", "25", rest),
+         rest = as.numeric(rest),
+         duty_code = ifelse(duty_code == "*", "EXT", duty_code),
+         duty_prime = ifelse(duty_code == "EXT",
+                             duty_code,
+                             str_sub(duty_code,1,1)),
+         year = year(date),
+         month = str_pad(month(date),2,pad = "0"),
+         year_month = glue("{year}-{month}")
+  )
+
+glimpse(clean_merged_dsr)
+
+### Pivot Wider DSR ###
+
+# latest_dsr_list <- clean_merged_dsr %>% 
+#   select(cmi, date, duty_prime, duty_code) %>% 
+#   filter(date >= m12_month_lb) %>% 
+#   group_by(cmi, duty_prime, duty_code) %>%
+#   count() %>% 
+#   pivot_wider(names_from = duty_prime, values_from = n) %>% 
+#   mutate(ttl_ext_days = EXT + R) %>% 
+#   select(cmi, EXT, R, ttl_ext_days, X) 
+
+pivot_duty_prime <- clean_merged_dsr %>% 
+  select(cmi, date, duty_prime) %>% 
+  filter(date >= m12_month_lb) %>% 
+  group_by(cmi, duty_prime) %>%
+  count() %>% 
+  pivot_wider(names_from = duty_prime, values_from = n) %>% 
+  mutate(ttl_ext_days = EXT + R) %>% 
+  select(cmi, EXT, R, ttl_ext_days, X)
+
+pivot_duty_code <- clean_merged_dsr %>% 
+  select(cmi, date, duty_code) %>% 
+  filter(date >= m12_month_lb) %>% 
+  group_by(cmi, duty_code) %>%
+  count() %>% 
+  pivot_wider(names_from = duty_code, values_from = n) %>% 
+  select(cmi, X2)
+  
+### Join Duty Code and Duty Prime ###
+
+join_duty_code <- pivot_duty_code %>% 
+  left_join(pivot_duty_prime, by = "cmi") %>% 
+  select(cmi, EXT, R, ttl_ext_days, X, X2) # Codes to display
+
+### Join Latest DSR and Seniority ###
+
+join_latest_dsr_snrty <- latest_snrty_list %>% 
+  left_join(join_duty_code, by = "cmi")
+
+# view(join_latest_dsr_snrty)
+
+### Extended Day 79 Pockets Table ###
+
+table_79p_join_dsr <- join_latest_dsr_snrty %>%
+  select(name, sdp, snrty, aircraft, schedule, seat, EXT, R, ttl_ext_days, X2, X) %>% 
+  mutate(sdp = ifelse(is.na(sdp), "", glue("({sdp})"))
+  )
+  
+# view(table_79p_join_dsr)
+
+### GT 79 Pockets Table ###
+
+table_79p_join_dsr %>%
+  mutate(name = as.character(glue("{name} {sdp}"))) %>%
+ # name = map(name, ~gt::html(as.character(.x))) %>% 
+  select(name, snrty, aircraft, schedule, seat, EXT, R, ttl_ext_days, X2, X) %>%
+  arrange(name) %>% 
+  gt(rowname_col = "name")%>% 
+  tab_header(title = md("NJASAP *Pilot Duty Summary*"),
+             subtitle = md(glue(
+               "Period from *{year(m12_month_lb)}-{str_pad(month(m12_month_lb),2,pad = '0')}*
+               to *{year(latest_published_date)}-{str_pad(month(latest_published_date),2,pad = '0')}*")
+             )
+             ) %>% 
+  gt_theme_espn() %>% 
+  cols_label(
+    name = "Name (sdp)",
+    snrty = "Seniority",
+    ttl_ext_days = "Total Ext Days",
+    X2 = "Planned Intl Event"
+  ) %>% 
+  sub_missing(
+    columns = everything(),
+    rows = everything(),
+    missing_text = "--"
+  ) %>% 
+  cols_width(
+    snrty ~px(100),
+    name ~px(225),
+    aircraft ~px(100),
+    schedule ~px(100),
+    seat ~px(40),
+    EXT ~px(40),
+    R ~px(40),
+    X ~px(40),
+    ttl_ext_days ~px(130),
+    everything() ~px(150)) %>% 
+  tab_footnote(footnote = md(glue("*Sniority, aircraft, schedule, 
+                                  and seat based on
+                                  {year(latest_published_date)}-0{month(latest_published_date)}
+                                   seniority list*")),
+               locations = cells_title(groups = "subtitle"),
+               placement = "right")
+
+### Year Month Summary 12-Month ###
+
+dsr_12_month_back <- max(clean_merged_dsr$date) %m+% months(-12)
+dsr_max_month <- month(max(clean_merged_dsr$date))
+dsr_max_year <- year(max(clean_merged_dsr$date))
+
+clean_merged_dsr %>% 
+  filter(date > dsr_12_month_back) %>% 
+  group_by(year_month, duty_code) %>%
+  count() %>% 
+  pivot_wider(names_from = duty_code, values_from = n) %>% 
+  mutate(total_extended = R + EXT) %>% 
+  select(year_month, R, EXT, total_extended) %>% 
+  ungroup() %>% 
+  gt(rowname_col = "year_month") %>% 
+  tab_header(title = md("NJASAP *Extended Day Summary*"),
+             subtitle = md(glue("Period from *{year(dsr_12_month_back)}-0{month(dsr_12_month_back)+1}*
+                             to *{dsr_max_year}-0{dsr_max_month}*")
+             )
+  ) %>% 
+  gt_theme_espn() %>% 
+  cols_label(
+    R = "VAWD",
+    total_extended = "Total Extened"
+  ) %>% 
+  tab_options(
+    stub.font.size = "16"
+  ) %>% 
+  fmt_number(everything(),
+             sep_mark = ",",
+             decimals = 0)
+```
+
+# Misc Holding
+
+```{r}
+#| title: "Extended Day Summary"
+
+
+### Year Month Summary 12-Month ###
+
+dsr_12_month_back <- max(clean_merged_dsr$date) %m+% months(-12)
+dsr_max_month <- month(max(clean_merged_dsr$date))
+dsr_max_year <- year(max(clean_merged_dsr$date))
+
+clean_merged_dsr %>% 
+  filter(date > dsr_12_month_back) %>% 
+  group_by(year_month, duty_code) %>%
+  count() %>% 
+  pivot_wider(names_from = duty_code, values_from = n) %>% 
+  mutate(total_extended = R + EXT) %>% 
+  select(year_month, R, EXT, total_extended) %>% 
+  ungroup() %>% 
+  gt(rowname_col = "year_month") %>% 
+  tab_header(title = md("NJASAP *Extended Day Summary*"),
+             subtitle = md(glue("Period from *{year(dsr_12_month_back)}-0{month(dsr_12_month_back)+1}*
+                             to *{dsr_max_year}-0{dsr_max_month}*")
+             )
+  ) %>% 
+  gt_theme_espn() %>% 
+  cols_label(
+    R = "VAWD",
+    total_extended = "Total Extened"
+  ) %>% 
+  tab_options(
+    stub.font.size = "16"
+  ) %>% 
+  fmt_number(everything(),
+             sep_mark = ",",
+             decimals = 0)
+
+
 ```
