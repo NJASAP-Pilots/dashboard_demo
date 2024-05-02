@@ -4,7 +4,6 @@ library(scales)
 library(DT)
 library(gt)
 library(glue)
-library(glue)
 library(plotly)
 
 
