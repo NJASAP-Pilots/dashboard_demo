@@ -1,0 +1,72 @@
+---
+title: "attrition_testing"
+output: html_document
+date: "2024-05-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(readxl)
+library(cellranger)
+library(lubridate)
+library(glue)
+library(plotly)
+```
+
+```{r}
+#| label: Attrition via Aptify
+
+
+roster_file <- dir(path = "~/OneDrive - NJASAP/Documents/Contact List UnionWare Aptify",
+                     full.names = T,
+                     pattern = "ACTIVE.*\\.xlsx$")
+
+roster <- read_excel(roster_file,
+                     sheet = "Sheet1",
+                     range = cell_cols(1:25)
+                     )
+
+clean_roster <- roster %>%
+  rename_with(~tolower(gsub(" ","_", .x))) %>% 
+  rename(employee_no = `employee_#`,
+         cmi = crew_member_id) %>% 
+  mutate(hire_date = ymd(hire_date),
+         end_date = ymd(end_date),
+         birthday = ymd(birthday),
+         full_name = as.character(glue("{last_name}, {first_name}")),
+         yos = ceiling(as.duration(hire_date %--% today()) / dyears(1)),
+         age = ceiling(as.duration(birthday %--% today()) / dyears(1)),
+         hire_ym = as.character(glue("{year(hire_date)}-{str_pad(month(hire_date),2,pad = '0')}")),
+         end_ym = ifelse(is.na(end_date), NA,
+                          as.character(glue("{year(end_date)}-{str_pad(month(end_date),2,pad = '0')}"))
+                          )
+        )
+
+ ### Reuired Dates ###
+
+roster_max_hire_floor <- floor_date(max(clean_roster$hire_date, na.rm = T), months(1))
+
+roster_12m_lb <- add_with_rollback(roster_max_hire_floor,
+                                   months(-11))
+
+
+roster_attrti <- clean_roster %>%
+  select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
+  filter(end_date >= roster_12m_lb ,!is.na(cmi)) %>%
+  count(end_ym) %>% 
+  mutate(distinct_ym = n_distinct(end_ym), avg_ym = sum(n) / distinct_ym) %>% 
+  ggplot(aes(end_ym, n,
+             text = glue("Year Month: {end_ym}\nAttrited Pilots: {n}")),
+         avg_ym)+
+  geom_hline(aes(yintercept = avg_ym))+
+  geom_line(group = "end_ym")+
+  geom_point(size = 3, color = "steelblue", alpha = 0.8)+
+  theme_bw()+
+  labs(x = NULL,
+       y = "Count")
+
+ggplotly(roster_attrti, tooltip = "text")
+  
+```

@@ -32,11 +32,17 @@ library(plotly)
 
 ### Import and merge seniority lists ###
 
-imported_seniority <- dir(path = "data/", 
+imported_folder_2023 <- dir(path = "~/OneDrive - NJASAP/Documents/Seniority Related/Seniority List - Union/2023", 
                             full.names = T,
                             pattern = "\\d\\d\\d[34]-\\d\\d\\sSeniorityList_UnionCopy.xlsx"
-)
+                            )
 
+imported_folder_2024 <- dir(path = "~/OneDrive - NJASAP/Documents/Seniority Related/Seniority List - Union/2024", 
+                            full.names = T,
+                            pattern = "\\d\\d\\d[34]-\\d\\d\\sSeniorityList_UnionCopy.xlsx"
+                            )
+
+imported_master_snrty_folder <- c(imported_folder_2023, imported_folder_2024)
 
 ### Create Function to build list of files ###
 
@@ -51,7 +57,7 @@ read_snrty_files <- function(file){
 
 ### Bind files by folder ###
 
-merged_seniority <- map_dfr(.x = imported_seniority, .f = read_snrty_files)
+merged_seniority <- map_dfr(.x = imported_master_snrty_folder, .f = read_snrty_files)
 
 
 ```
@@ -117,7 +123,7 @@ In `{r} time_period` the staff breakdown in the unit was as follows:
 This is a fictional hospital. The data are simulated based on realistic birth characteristics and risk factors from [this report by the CDC](https://www.cdc.gov/nchs/data/nvsr/nvsr72/nvsr72-01.pdf).
 :::
 
-# All
+# Home
 
 ```{r}
 #| label: all-values
@@ -168,7 +174,7 @@ p_sic <- seniority %>%
 #   )
 ```
 
-## Row {height="20%"}
+## Row {height="10%"}
 
 ```{r}
 #| content: valuebox
@@ -203,7 +209,7 @@ list(
 )
 ```
 
-## Row {height="40%}
+## Row {height="30%}
 
 ```{r}
 #| title: "Total Pilots"
@@ -228,7 +234,7 @@ total_pilots <- seniority %>%
 ggplotly(total_pilots, tooltip = "text")
 ```
 
-## Row {height="40%}
+## Row {height="30%}
 
 ```{r}
 #| title: "New Hires"
@@ -257,6 +263,63 @@ hired_pilots <- seniority %>%
 
 ggplotly(hired_pilots, tooltip = "text")
 ```
+
+## Row {height="30%}
+
+```{r}
+#| title: "Attrition"
+
+roster_file <- dir(path = "~/OneDrive - NJASAP/Documents/Contact List UnionWare Aptify",
+                     full.names = T,
+                     pattern = "ACTIVE.*\\.xlsx$")
+
+roster <- read_excel(roster_file,
+                     sheet = "Sheet1",
+                     range = cell_cols(1:25)
+                     )
+
+clean_roster <- roster %>%
+  rename_with(~tolower(gsub(" ","_", .x))) %>% 
+  rename(employee_no = `employee_#`,
+         cmi = crew_member_id) %>% 
+  mutate(hire_date = ymd(hire_date),
+         end_date = ymd(end_date),
+         birthday = ymd(birthday),
+         full_name = as.character(glue("{last_name}, {first_name}")),
+         yos = ceiling(as.duration(hire_date %--% today()) / dyears(1)),
+         age = ceiling(as.duration(birthday %--% today()) / dyears(1)),
+         hire_ym = as.character(glue("{year(hire_date)}-{str_pad(month(hire_date),2,pad = '0')}")),
+         end_ym = ifelse(is.na(end_date), NA,
+                          as.character(glue("{year(end_date)}-{str_pad(month(end_date),2,pad = '0')}"))
+                          )
+        )
+
+ ### Reuired Dates ###
+
+roster_max_hire_floor <- floor_date(max(clean_roster$hire_date, na.rm = T), months(1))
+
+roster_12m_lb <- add_with_rollback(roster_max_hire_floor,
+                                   months(-11))
+
+
+roster_attrti <- clean_roster %>%
+  select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
+  filter(end_date >= roster_12m_lb ,!is.na(cmi)) %>%
+  count(end_ym) %>% 
+  mutate(distinct_ym = n_distinct(end_ym), avg_ym = sum(n) / distinct_ym) %>% 
+  ggplot(aes(end_ym, n,
+             text = glue("Year Month: {end_ym}\nAttrited Pilots: {n}")),
+         avg_ym)+
+  geom_hline(aes(yintercept = avg_ym))+
+  geom_line(group = "end_ym")+
+  geom_point(size = 3, color = "steelblue", alpha = 0.8)+
+  theme_bw()+
+  labs(x = NULL,
+       y = "Count")
+
+ggplotly(roster_attrti, tooltip = "text")
+```
+
 
 # Fleet Stats
 
@@ -460,19 +523,7 @@ dsr_max_year <- year(max(clean_merged_dsr$date))
 latest_snrty_list <- clean_merged_snrty %>% 
   filter( published > max_pub_floor)
 
-
-# glimpse(clean_merged_dsr)
-
-### Pivot Wider DSR ###
-
-# latest_dsr_list <- clean_merged_dsr %>% 
-#   select(cmi, date, duty_prime, duty_code) %>% 
-#   filter(date >= m12_month_lb) %>% 
-#   group_by(cmi, duty_prime, duty_code) %>%
-#   count() %>% 
-#   pivot_wider(names_from = duty_prime, values_from = n) %>% 
-#   mutate(ttl_ext_days = EXT + R) %>% 
-#   select(cmi, EXT, R, ttl_ext_days, X) 
+### DSR Prep for 12-Months ###
 
 pivot_duty_prime <- clean_merged_dsr %>% 
   select(cmi, date, duty_prime) %>% 
@@ -504,18 +555,63 @@ join_latest_dsr_snrty <- latest_snrty_list %>%
 
 # view(join_latest_dsr_snrty)
 
-### Extended Day 79 Pockets Table ###
+### Extended Day 79 Pockets Table 12-Months ###
 
 table_79p_join_dsr <- join_latest_dsr_snrty %>%
   mutate(sdp = ifelse(is.na(sdp), "", glue("({sdp})")),
-         name_sdp = glue("{name} {sdp}"),
-         name_sdp = as.character(name_sdp)
+         name_sdp = as.character(glue("{name} {sdp}")),
+       #  name_sdp = as.character(name_sdp)
          ) %>% 
   select(name_sdp, snrty, aircraft, schedule, seat, EXT, R, ttl_ext_days, X2, X)
 
+### Replace NA with 0 ###
+
+table_79p_join_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
+
+### Extended Day 79 Pockets Table YTD ###
+
+### DSR Prep for  ###
+
+pivot_duty_prime <- clean_merged_dsr %>% 
+  select(cmi, date, duty_prime) %>% 
+  filter(date >= dsr_12m_lbk) %>% 
+  group_by(cmi, duty_prime) %>%
+  count() %>% 
+  pivot_wider(names_from = duty_prime, values_from = n) %>% 
+  mutate(ttl_ext_days = EXT + R) %>% 
+  select(cmi, EXT, R, ttl_ext_days, X)
+
+pivot_duty_code <- clean_merged_dsr %>% 
+  select(cmi, date, duty_code) %>% 
+  filter(date >= dsr_12m_lbk) %>% 
+  group_by(cmi, duty_code) %>%
+  count() %>% 
+  pivot_wider(names_from = duty_code, values_from = n) %>% 
+  select(cmi, X2)
+  
+### Join Duty Code and Duty Prime ###
+
+join_duty_code <- pivot_duty_code %>% 
+  left_join(pivot_duty_prime, by = "cmi") %>% 
+  select(cmi, EXT, R, ttl_ext_days, X, X2) # Codes to display
+
+### Join Latest DSR and Seniority ###
+
+join_latest_dsr_snrty <- latest_snrty_list %>% 
+  left_join(join_duty_code, by = "cmi")
+
+table_79p_join_dsr <- join_latest_dsr_snrty %>%
+  filter()
+  mutate(sdp = ifelse(is.na(sdp), "", glue("({sdp})")),
+         name_sdp = as.character(glue("{name} {sdp}")),
+       #  name_sdp = as.character(name_sdp)
+         ) %>% 
+  select(name_sdp, snrty, aircraft, schedule, seat, EXT, R, ttl_ext_days, X2, X)
+
+### Replace NA with 0 ###
+
 table_79p_join_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
    
-# view(table_79p_join_dsr)
 
 ### GT 79 Pockets Table ###
 
@@ -564,7 +660,7 @@ table_79p_join_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
 
 
 ```{r}
-#| title: "Duty Day Summary"
+#| title: "Duty Day Summary 12-Months"
 
 table_79p_join_dsr %>% 
   datatable(
@@ -583,6 +679,28 @@ table_79p_join_dsr %>%
       )
   )
 ```
+
+```{r}
+#| title: "Duty Day Summary YTD
+
+table_79p_join_dsr %>% 
+  datatable(
+    colnames = c("Name", "Senioirty", "Fleet", "Schedult", "Seat", "Ext", "R", "Total (Ext +R)", "Pland Intl", "X"),
+    filter = "top",
+    options = list(
+     # paging = TRUE,
+     # pageLength = 25,
+      autoWidth = TRUE,
+      scrollY="100vh",
+      scrollCollapse = FALSE
+    ),
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left;',
+      'Period from ', htmltools::em(glue("{dsr_min_year}-{dsr_min_month}")),' to ',htmltools::em(glue("{dsr_max_year}-{dsr_max_month}"))
+      )
+  )
+```
+
 
 # Misc Holding
 
