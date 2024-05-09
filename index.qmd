@@ -11,10 +11,12 @@ editor_options:
 #| message: false
 
 library(tidyverse)
+library(ggtext)
 library(readxl)
 library(scales)
 library(DT)
 library(gt)
+library(gtExtras)
 library(glue)
 library(plotly)
 # theme_set(theme_minimal(base_size = 24, base_family = "Atkinson Hyperlegible"))
@@ -23,12 +25,6 @@ library(plotly)
 ```{r}
 #| label: load-data
 #| message: false
-
-# seniority_in <- read_excel("data/2024-04 SeniorityList_UnionCopy.xlsx",
-#                         sheet = "UNION_EXCEL_FILE",
-#                         range = cell_cols("A:P")
-#                         )
-
 
 ### Import and merge seniority lists ###
 
@@ -94,34 +90,42 @@ time_period_in <- paste(month(max_pub_floor, label = T),
 time_period <- time_period_in[1]
 ```
 
-#  {.sidebar}
 
-\
-This dashboard displays statistics for:
+```{r}
+#| label: sidebar paking lot
+#| results: hide
 
-|              |                     |
-|--------------|---------------------|
-| **Hospital** | Grey Sloan Memorial |
-| **Unit**     | Labor and Delivery  |
-| **Month**    | `{r} time_period`   |
+# #  {.sidebar}
+# 
+# \
+# This dashboard displays statistics for:
+# 
+# |              |                     |
+# |--------------|---------------------|
+# | **Hospital** | Grey Sloan Memorial |
+# | **Unit**     | Labor and Delivery  |
+# | **Month**    | `{r} time_period`   |
+# 
+# ------------------------------------------------------------------------
+# 
+# In `{r} time_period` the staff breakdown in the unit was as follows:
+# 
+# |                          |     |
+# |--------------------------|-----|
+# | **Attending physicians** |  14 |
+# | **Residents**            |  21 |
+# | **Nurses**               |  12 |
+# 
+# ------------------------------------------------------------------------
+# 
+# ::: {.callout-note collapse="true"}
+# ## Disclaimer
+# 
+# This is a fictional hospital. The data are simulated based on realistic birth characteristics and risk factors from [this report by the CDC](https://www.cdc.gov/nchs/data/nvsr/nvsr72/nvsr72-01.pdf).
+# :::
 
-------------------------------------------------------------------------
 
-In `{r} time_period` the staff breakdown in the unit was as follows:
-
-|                          |     |
-|--------------------------|-----|
-| **Attending physicians** |  14 |
-| **Residents**            |  21 |
-| **Nurses**               |  12 |
-
-------------------------------------------------------------------------
-
-::: {.callout-note collapse="true"}
-## Disclaimer
-
-This is a fictional hospital. The data are simulated based on realistic birth characteristics and risk factors from [this report by the CDC](https://www.cdc.gov/nchs/data/nvsr/nvsr72/nvsr72-01.pdf).
-:::
+```
 
 # Home
 
@@ -146,32 +150,6 @@ p_sic <- seniority %>%
   mutate(p = n / sum(n)) %>% 
   filter(seat == "SIC") %>% 
   pull(p)
-
-# n_births <- nrow(ld)
-# 
-# p_cesarean <- ld |>
-#   count(delivery_method) |>
-#   mutate(p = n / sum(n)) |>
-#   filter(delivery_method == "Cesarean") |>
-#   pull(p)
-# 
-# p_cesarean_color <- case_when(
-#   between(p_cesarean, params$us_cesarean_rate, params$us_cesarean_rate + params$threshold_diff) ~ "warning",
-#   p_cesarean > params$us_cesarean_rate + params$threshold_diff ~ "danger",
-#   .default = "light"
-#   )
-# 
-# p_preterm <- ld |>
-#   count(term) |>
-#   mutate(p = n / sum(n)) |>
-#   filter(term == "Pre-term") |>
-#   pull(p)
-# 
-# p_preterm_color <- case_when(
-#   between(p_preterm, params$us_preterm_rate, params$us_preterm_rate + params$threshold_diff) ~ "warning",
-#   p_preterm > params$us_preterm_rate + params$threshold_diff ~ "danger",
-#   .default = "light"
-#   )
 ```
 
 ## Row {height="10%"}
@@ -264,10 +242,12 @@ hired_pilots <- seniority %>%
 ggplotly(hired_pilots, tooltip = "text")
 ```
 
-## Row {height="30%}
+# Attrition
 
 ```{r}
-#| title: "Attrition"
+#| label: hire attrition values
+#| results: hide
+
 
 roster_file <- dir(path = "~/OneDrive - NJASAP/Documents/Contact List UnionWare Aptify",
                      full.names = T,
@@ -277,6 +257,8 @@ roster <- read_excel(roster_file,
                      sheet = "Sheet1",
                      range = cell_cols(1:25)
                      )
+
+pull_date <- ymd("2024-04-30")
 
 clean_roster <- roster %>%
   rename_with(~tolower(gsub(" ","_", .x))) %>% 
@@ -289,35 +271,145 @@ clean_roster <- roster %>%
          yos = ceiling(as.duration(hire_date %--% today()) / dyears(1)),
          age = ceiling(as.duration(birthday %--% today()) / dyears(1)),
          hire_ym = as.character(glue("{year(hire_date)}-{str_pad(month(hire_date),2,pad = '0')}")),
-         end_ym = ifelse(is.na(end_date), NA,
+         end_ym = ifelse(is.na(end_date),NA,
                           as.character(glue("{year(end_date)}-{str_pad(month(end_date),2,pad = '0')}"))
-                          )
+                          ),
+         end_year_yy = str_sub(end_ym, start = -5, end = -4),
+         hire_year_yy = str_sub(hire_ym, start = -5, end = -4),
+         pull_date = pull_date
         )
 
- ### Reuired Dates ###
+ ### Required Dates ###
 
-roster_max_hire_floor <- floor_date(max(clean_roster$hire_date, na.rm = T), months(1))
+roster_max_pull_floor <- floor_date(max(clean_roster$pull_date, na.rm = T), months(1))
 
-roster_12m_lb <- add_with_rollback(roster_max_hire_floor,
+roster_12m_lb <- add_with_rollback(roster_max_pull_floor,
                                    months(-11))
 
+n_hires <- clean_roster %>% 
+  filter(end_date >= roster_12m_lb &
+           !is.na(end_date)) %>% 
+  nrow()
 
-roster_attrti <- clean_roster %>%
+p_pic <- seniority %>% 
+  filter(published > max_pub_floor) %>% 
+  count(seat) %>% 
+  mutate(p = n / sum(n)) %>% 
+  filter(seat == "PIC") %>% 
+  pull(p)
+
+p_sic <- seniority %>% 
+  filter(published > max_pub_floor) %>% 
+  count(seat) %>% 
+  mutate(p = n / sum(n)) %>% 
+  filter(seat == "SIC") %>% 
+  pull(p)
+
+### Attrition Plot ###
+
+# roster_attrit <- clean_roster %>%
+#   select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
+#   filter(end_date >= roster_12m_lb ,!is.na(cmi)) %>%
+#   count(end_ym) %>%
+#   mutate(distinct_ym = n_distinct(end_ym), avg_ym = sum(n) / distinct_ym) %>%
+#   ggplot()+
+#   geom_hline(aes(yintercept = avg_ym))+
+#   geom_line(aes(x = end_ym, y = n), group = "end_ym")+
+#   geom_point(aes(x = end_ym, y = n), size = 3, color = "steelblue", alpha = 0.8)+
+#   theme_bw()+
+#   labs(x = NULL,
+#        y = "Count")
+# 
+# roster_attrit
+# 
+# ggplotly(roster_attrit, tooltip = "text")
+```
+
+## row {height="10%"}
+
+```{r}
+#| content: valuebox
+#| title: "Total Pilots"
+
+list(
+  icon = "globe",
+  color = "primary",
+  value = n_pilots
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Percent PIC"
+
+list(
+  icon = "person-lines-fill",
+  color = "secondary",
+  value = label_percent(accuracy = 0.1)(p_pic)
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Percent SIC"
+
+list(
+  icon = "person-lines-fill",
+  color = "primary",
+  value = label_percent(accuracy = 0.1)(p_sic)
+)
+```
+
+## row {height="90%}
+
+```{r}
+
+### Hire & Attrition Multi-Plot
+
+t_end_ym <- clean_roster %>%
   select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
-  filter(end_date >= roster_12m_lb ,!is.na(cmi)) %>%
-  count(end_ym) %>% 
-  mutate(distinct_ym = n_distinct(end_ym), avg_ym = sum(n) / distinct_ym) %>% 
-  ggplot(aes(end_ym, n,
-             text = glue("Year Month: {end_ym}\nAttrited Pilots: {n}")),
-         avg_ym)+
-  geom_hline(aes(yintercept = avg_ym))+
-  geom_line(group = "end_ym")+
-  geom_point(size = 3, color = "steelblue", alpha = 0.8)+
+  filter(end_date >= roster_12m_lb ,!is.na(end_date)) %>% 
+  count(end_ym, name = "end_count")
+
+t_hire_ym <- clean_roster %>%
+  select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
+  filter(hire_date >= roster_12m_lb ,!is.na(cmi)) %>% 
+  count(hire_ym, name = "hire_count")
+
+# join_roster_hire_attrit #
+
+join_hire_attrit <- t_hire_ym %>% 
+  left_join(t_end_ym, by = join_by(hire_ym == end_ym))
+
+# Hire Attrit Plot #
+
+hire_attrit_title <- md(glue("Data current as of {year(roster_max_pull_floor)}-{str_pad(month(roster_max_pull_floor),2, pad = 0)} NJASAP Pilot Seniority List"))
+
+join_hire_attrit %>% 
+  rename(year_month = hire_ym) %>% 
+  mutate(net_gain = hire_count-end_count) %>% 
+  ggplot()+
+  geom_line(aes(x = year_month, y = hire_count), group = "hire_count", color = "#33FF7B")+
+  geom_line(aes(x = year_month, y = end_count), group = "end_count", color = "#FF7B33")+
+  geom_point(aes(x = year_month, y = hire_count), size = 3, color = "steelblue", alpha = 0.8)+
+  geom_point(aes(x = year_month, y = end_count), size = 3, color = "steelblue", alpha = 0.8)+
+  geom_text(aes(x = year_month, y = end_count,
+                label = end_count,
+                vjust = 1.8))+
+    geom_text(aes(x = year_month, y = hire_count,
+                label = hire_count,
+                vjust = -1.5))+
+  scale_y_continuous(limits = c(0,125), n.breaks = 6)+
   theme_bw()+
   labs(x = NULL,
-       y = "Count")
+       y = "Count")+
+  ggtitle("NJASAP HIRING & ATTRITION",
+          subtitle = glue("*Data current as of {year(roster_max_pull_floor)}-{str_pad(month(roster_max_pull_floor),2, pad = 0)} NJASAP Pilot Seniority List*")
+            )+
+  theme(plot.subtitle = element_markdown(),
+        axis.text.x = element_text(angle = 45, hjust = 1)
+        )
 
-ggplotly(roster_attrti, tooltip = "text")
 ```
 
 
@@ -418,7 +510,7 @@ tfleet_ratio %>%
 
 # Duty Summary
 
-```{r}
+```{r duty_summary}
 #| title: "Duty Summary"
 #| results: hide
 
@@ -515,6 +607,7 @@ dsr_min_month <- str_pad(month(dsr_12m_lbk),2, pad = "0")
 dsr_min_year <- year(dsr_12m_lbk)
 dsr_max_month <- str_pad(month(max(clean_merged_dsr$date)),2,pad = "0")
 dsr_max_year <- year(max(clean_merged_dsr$date))
+dsr_ytd_jan <- floor_date(max(clean_merged_dsr$date), years(1))
 
 ### Table Prep -- Seniority List ###
 
@@ -523,7 +616,9 @@ dsr_max_year <- year(max(clean_merged_dsr$date))
 latest_snrty_list <- clean_merged_snrty %>% 
   filter( published > max_pub_floor)
 
+##############################
 ### DSR Prep for 12-Months ###
+##############################
 
 pivot_duty_prime <- clean_merged_dsr %>% 
   select(cmi, date, duty_prime) %>% 
@@ -568,49 +663,50 @@ table_79p_join_dsr <- join_latest_dsr_snrty %>%
 
 table_79p_join_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
 
+#########################################
 ### Extended Day 79 Pockets Table YTD ###
+#########################################
 
-### DSR Prep for  ###
+### DSR Prep for  YTD ###
 
-pivot_duty_prime <- clean_merged_dsr %>% 
-  select(cmi, date, duty_prime) %>% 
-  filter(date >= dsr_12m_lbk) %>% 
+pivot_ytd_duty_prime <- clean_merged_dsr %>%
+  select(cmi, date, duty_prime) %>%
+  filter(date >= dsr_ytd_jan) %>%
   group_by(cmi, duty_prime) %>%
-  count() %>% 
-  pivot_wider(names_from = duty_prime, values_from = n) %>% 
-  mutate(ttl_ext_days = EXT + R) %>% 
+  count() %>%
+  pivot_wider(names_from = duty_prime, values_from = n) %>%
+  mutate(ttl_ext_days = EXT + R) %>%
   select(cmi, EXT, R, ttl_ext_days, X)
 
-pivot_duty_code <- clean_merged_dsr %>% 
-  select(cmi, date, duty_code) %>% 
-  filter(date >= dsr_12m_lbk) %>% 
+pivot_ytd_duty_code <- clean_merged_dsr %>%
+  select(cmi, date, duty_code) %>%
+  filter(date >= dsr_ytd_jan) %>%
   group_by(cmi, duty_code) %>%
-  count() %>% 
-  pivot_wider(names_from = duty_code, values_from = n) %>% 
+  count() %>%
+  pivot_wider(names_from = duty_code, values_from = n) %>%
   select(cmi, X2)
-  
+
 ### Join Duty Code and Duty Prime ###
 
-join_duty_code <- pivot_duty_code %>% 
-  left_join(pivot_duty_prime, by = "cmi") %>% 
+join_ytd_duty_code <- pivot_ytd_duty_code %>%
+  left_join(pivot_ytd_duty_prime, by = "cmi") %>%
   select(cmi, EXT, R, ttl_ext_days, X, X2) # Codes to display
 
 ### Join Latest DSR and Seniority ###
 
-join_latest_dsr_snrty <- latest_snrty_list %>% 
-  left_join(join_duty_code, by = "cmi")
+join_latest_ytd_dsr_snrty <- latest_snrty_list %>%
+  left_join(join_ytd_duty_code, by = "cmi")
 
-table_79p_join_dsr <- join_latest_dsr_snrty %>%
-  filter()
+table_79p_join_ytd_dsr <- join_latest_ytd_dsr_snrty %>%
   mutate(sdp = ifelse(is.na(sdp), "", glue("({sdp})")),
          name_sdp = as.character(glue("{name} {sdp}")),
        #  name_sdp = as.character(name_sdp)
-         ) %>% 
+         ) %>%
   select(name_sdp, snrty, aircraft, schedule, seat, EXT, R, ttl_ext_days, X2, X)
 
 ### Replace NA with 0 ###
 
-table_79p_join_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
+table_79p_join_ytd_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
    
 
 ### GT 79 Pockets Table ###
@@ -681,7 +777,7 @@ table_79p_join_dsr %>%
 ```
 
 ```{r}
-#| title: "Duty Day Summary YTD
+#| title: "Duty Day Summary YTD"
 
 table_79p_join_dsr %>% 
   datatable(
@@ -701,6 +797,144 @@ table_79p_join_dsr %>%
   )
 ```
 
+# SDP Awards
+
+```{r  SDP Awards}
+#| title: "SDP Awards"
+
+### New SDP Feb 2024 ###
+
+seniority %>% 
+  select(cmi,name, aircraft, sdp, published) %>% 
+  pivot_wider(names_from = published, values_from = sdp) %>% 
+  mutate(new_sdp = ifelse( is.na(`2024-01-15`) & !is.na(`2024-02-15`), 1, 0)
+         )%>% 
+  filter(new_sdp == 1) %>% 
+  select(name, aircraft, "2024-01-15", "2024-02-15") %>% 
+  gt(rowname_col = "name", groupname_col = "aircraft") %>% 
+  tab_header(title = md("February SDP Awards")) %>% 
+  tab_style(
+    style = cell_text(align = "left"),
+    locations = cells_title("title")
+  ) %>% 
+    cols_label(
+    "2024-01-15" = md("*2024-01*"),
+    "2024-02-15" = md("*2024-02*")
+  ) %>% 
+    cols_width(
+    starts_with("2024") ~px(100),
+    everything() ~px(200)
+  ) %>% 
+    sub_missing(
+    columns = everything(),
+    rows = everything(),
+    missing_text = "--"
+  ) %>% 
+  cols_align(
+    align = "right",
+    columns = "name"
+  ) %>%
+    cols_align(
+    align = "right",
+    columns = 3:4
+  ) %>%
+  gt_theme_538 %>% 
+  tab_options(#heading.background.color = "#cce6ff",
+              heading.border.bottom.style = "solid")
+
+  # tab_style(
+  #   style = cell_fill("lightgray"),
+  #   locations = cells_row_groups()
+  # ) %>% 
+  # cols_align(
+  #   align = "right",
+  #   columns = "name"
+  # ) %>% 
+  # cols_align(
+  #   align = "center",
+  #   columns = starts_with("2024")
+  # )
+
+### New SDP March 2024 ###
+
+seniority %>% 
+  select(cmi,name, aircraft, sdp, published) %>% 
+  pivot_wider(names_from = published, values_from = sdp) %>% 
+  mutate(new_sdp = ifelse( is.na(`2024-02-15`) & !is.na(`2024-03-19`), 1, 0)
+  )%>% 
+  filter(new_sdp == 1) %>% 
+  select(name, aircraft, "2024-02-15", "2024-03-19") %>% 
+  gt(rowname_col = "name", groupname_col = "aircraft") %>% 
+  tab_header(title = md("March SDP Awards")) %>% 
+  tab_style(
+    style = cell_text(align = "left"),
+    locations = cells_title("title")
+  ) %>% 
+  cols_label(
+    "2024-02-15" = md("*2024-02*"),
+    "2024-03-19" = md("*2024-03*")
+  ) %>% 
+    cols_width(
+    starts_with("2024") ~px(100),
+    everything() ~px(200)
+  ) %>% 
+    sub_missing(
+    columns = everything(),
+    rows = everything(),
+    missing_text = "--"
+  ) %>% 
+  cols_align(
+    align = "right",
+    columns = "name"
+  ) %>%
+    cols_align(
+    align = "right",
+    columns = 3:4
+  ) %>%
+  gt_theme_538 %>% 
+  tab_options(#heading.background.color = "#cce6ff",
+              heading.border.bottom.style = "solid")
+
+### New SDP April 2024 ###
+
+seniority %>% 
+  select(cmi,name, aircraft, sdp, published) %>% 
+  pivot_wider(names_from = published, values_from = sdp) %>% 
+  mutate(new_sdp = ifelse( is.na(`2024-03-19`) & !is.na(`2024-04-15`), 1, 0)
+  )%>% 
+  filter(new_sdp == 1) %>% 
+  select(name, aircraft, "2024-03-19", "2024-04-15") %>% 
+  gt(rowname_col = "name", groupname_col = "aircraft") %>% 
+  tab_header(title = md("April SDP Awards")) %>% 
+  tab_style(
+    style = cell_text(align = "left"),
+    locations = cells_title("title")
+  ) %>% 
+  cols_label(
+    "2024-03-19" = md("*2024-03*"),
+    "2024-04-15" = md("*2024-04*"),
+  ) %>% 
+    cols_width(
+    starts_with("2024") ~px(100),
+    everything() ~px(200)
+  ) %>% 
+    sub_missing(
+    columns = everything(),
+    rows = everything(),
+    missing_text = "--"
+  ) %>% 
+  cols_align(
+    align = "right",
+    columns = "name"
+  ) %>%
+    cols_align(
+    align = "right",
+    columns = 3:4
+  ) %>%
+  gt_theme_538 %>% 
+  tab_options(#heading.background.color = "#cce6ff",
+              heading.border.bottom.style = "solid")
+```
 
 # Misc Holding
 
