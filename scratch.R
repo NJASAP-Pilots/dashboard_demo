@@ -1,4 +1,6 @@
 
+sessionInfo()
+
 glue("Data current as of {year(roster_max_pull_floor)}-{str_pad(month(roster_max_pull_floor),2, pad = 0)} NJASAP Pilot Seniority List")
 )
 

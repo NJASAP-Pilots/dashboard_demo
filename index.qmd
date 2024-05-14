@@ -19,6 +19,7 @@ library(gt)
 library(gtExtras)
 library(glue)
 library(plotly)
+library(calendR)
 # theme_set(theme_minimal(base_size = 24, base_family = "Atkinson Hyperlegible"))
 ```
 
@@ -286,24 +287,20 @@ roster_max_pull_floor <- floor_date(max(clean_roster$pull_date, na.rm = T), mont
 roster_12m_lb <- add_with_rollback(roster_max_pull_floor,
                                    months(-11))
 
-n_hires <- clean_roster %>% 
-  filter(end_date >= roster_12m_lb &
-           !is.na(end_date)) %>% 
-  nrow()
+n_attrit <- clean_roster %>%
+  select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
+  filter(end_date >= roster_12m_lb ,!is.na(end_date)) %>% 
+  count() %>% 
+  pull(n)
 
-p_pic <- seniority %>% 
-  filter(published > max_pub_floor) %>% 
-  count(seat) %>% 
-  mutate(p = n / sum(n)) %>% 
-  filter(seat == "PIC") %>% 
-  pull(p)
+n_hire <- clean_roster %>%
+  select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
+  filter(hire_date >= roster_12m_lb ,!is.na(hire_date)) %>% 
+  count() %>% 
+  pull(n)
 
-p_sic <- seniority %>% 
-  filter(published > max_pub_floor) %>% 
-  count(seat) %>% 
-  mutate(p = n / sum(n)) %>% 
-  filter(seat == "SIC") %>% 
-  pull(p)
+net_staff <- n_hire-n_attrit
+
 
 ### Attrition Plot ###
 
@@ -329,34 +326,34 @@ p_sic <- seniority %>%
 
 ```{r}
 #| content: valuebox
-#| title: "Total Pilots"
+#| title: "Total Hires"
 
 list(
   icon = "globe",
   color = "primary",
-  value = n_pilots
+  value = n_hire
 )
 ```
 
 ```{r}
 #| content: valuebox
-#| title: "Percent PIC"
+#| title: "Total Attrition"
 
 list(
   icon = "person-lines-fill",
   color = "secondary",
-  value = label_percent(accuracy = 0.1)(p_pic)
+  value = n_attrit
 )
 ```
 
 ```{r}
 #| content: valuebox
-#| title: "Percent SIC"
+#| title: "Net Staffing"
 
 list(
   icon = "person-lines-fill",
   color = "primary",
-  value = label_percent(accuracy = 0.1)(p_sic)
+  value = net_staff
 )
 ```
 
@@ -373,7 +370,7 @@ t_end_ym <- clean_roster %>%
 
 t_hire_ym <- clean_roster %>%
   select(cmi, full_name, hire_date, hire_ym, end_date, end_ym) %>% 
-  filter(hire_date >= roster_12m_lb ,!is.na(cmi)) %>% 
+  filter(hire_date >= roster_12m_lb ,!is.na(hire_date)) %>% 
   count(hire_ym, name = "hire_count")
 
 # join_roster_hire_attrit #
@@ -706,7 +703,7 @@ table_79p_join_ytd_dsr <- join_latest_ytd_dsr_snrty %>%
 
 ### Replace NA with 0 ###
 
-table_79p_join_ytd_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
+table_79p_join_ytd_dsr[6:10][is.na(table_79p_join_ytd_dsr[6:10])] <- 0
    
 
 ### GT 79 Pockets Table ###
@@ -754,6 +751,9 @@ table_79p_join_ytd_dsr[6:10][is.na(table_79p_join_dsr[6:10])] <- 0
 #                placement = "right")
 ```
 
+## row {.tabset}
+
+### Duty Summary 12-Month
 
 ```{r}
 #| title: "Duty Day Summary 12-Months"
@@ -766,7 +766,7 @@ table_79p_join_dsr %>%
      # paging = TRUE,
      # pageLength = 25,
       autoWidth = TRUE,
-      scrollY="100vh",
+  #    scrollY="100vh",
       scrollCollapse = FALSE
     ),
     caption = htmltools::tags$caption(
@@ -776,10 +776,12 @@ table_79p_join_dsr %>%
   )
 ```
 
+### Dut Summary YTD
+
 ```{r}
 #| title: "Duty Day Summary YTD"
 
-table_79p_join_dsr %>% 
+table_79p_join_ytd_dsr %>% 
   datatable(
     colnames = c("Name", "Senioirty", "Fleet", "Schedult", "Seat", "Ext", "R", "Total (Ext +R)", "Pland Intl", "X"),
     filter = "top",
@@ -787,7 +789,7 @@ table_79p_join_dsr %>%
      # paging = TRUE,
      # pageLength = 25,
       autoWidth = TRUE,
-      scrollY="100vh",
+ #     scrollY="100vh",
       scrollCollapse = FALSE
     ),
     caption = htmltools::tags$caption(
@@ -797,10 +799,60 @@ table_79p_join_dsr %>%
   )
 ```
 
-# SDP Awards
+# Schedule Calendars {orientation="columns" scrolling="true"}
+
+## column {width="50%"}
+
+### row {height="100%" .tabset}
+
+
+![](images/2024-7_Calendar_ALPHA_DASH.png)
+
+![](images/LIne_3_PNG_TEST_1080H.png)
+
+![](images/7_7_Line_2_v5.png)
+
+## column {width="50%"}
+
+### row {height="100%" .tabset}
+
+![](images/LIne_3_PNG_TEST_1080H.png)
+
+![](images/418x2500_TEST.png)
+
+![](images/7_7_Line_2_v3.png)
+
+```{r}
+# imp.dates <- rep(NA, 366)
+# imp.dates[c(1,15,50,89,91,148,186,246,333,360)] <- "2024 NJA Holidays"
+# imp.dates[c(7,8,9,10,11,12,13,21,22,23,24,25,26,27,35,36,37,38,39,40,41,49,50,51,
+#             52,53,54,55,63,64,65,66,67,68,69,77,78,79,80,81,82,83,91,92,93,94,95,
+#             96,97,105,106,107,108,109,110,111,119,120,121,122,123,124,125,133,134,
+#             135,136,137,138,139,147,148,149,150,151,152,153,161,162,163,164,165,
+#             166,167,175,176,177,178,179,180,181,189,190,191,192,193,194,195,203,
+#             204,205,206,207,208,209,217,218,219,220,221,222,223,231,232,233,234,
+#             235,236,237,245,246,247,248,249,250,251,259,260,261,262,263,264,265,
+#             273,274,275,276,277,278,279,287,288,289,290,291,292,293,301,302,303,
+#             304,305,306,307,315,316,317,318,319,320,321,329,330,331,332,333,334,
+#             335,343,344,345,346,347,348,349,357,358,359,360,361,362,363)] <- "Line 3"
+# 
+# 
+# calendR(year = 2024, papersize = "A2",         # Year
+#         title = "2024 NJASAP 7&7 Line 3",
+#         mbg.col = "steelblue",           # Background color for the month names
+#         months.pos = 0.5,    # Horizontal alignment of the month names
+#         months.col = "white",  # Text color of the month names
+#         special.days = imp.dates,    # Color days of the year
+#         special.col = c("pink", "lightblue"), # Color of the special.days
+#         legend.pos = "bottom")
+
+```
+
+# SDP Awards {scrolling="true"}
 
 ```{r  SDP Awards}
 #| title: "SDP Awards"
+
 
 ### New SDP Feb 2024 ###
 
