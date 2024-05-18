@@ -1044,10 +1044,10 @@ thba_map %>%
     setView(lng = -98.5795,
             lat = 39.283,
             zoom = 5) %>% 
-    setMaxBounds(lng1 = -130,
-                 lng2 = -66.95,
-                 lat1 = 25.84,
-                 lat2 = 49.38) %>% 
+    setMaxBounds(lng1 = -130.0,
+                 lng2 = -61.95,
+                 lat1 = 23.0,
+                 lat2 = 51.0) %>% 
   addAwesomeMarkers(~Longitude, ~Latitude,
                     icon = icons,
                     popup = ~popup)
