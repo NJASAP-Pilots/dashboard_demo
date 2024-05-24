@@ -6,3 +6,6 @@
 /.quarto/
 
 data
+.DS_Store
+z_OLD
+_quarto_OLD.yml

@@ -1,3 +1,37 @@
+
+#| label: sidebar paking lot
+#| results: hide
+
+# #  {.sidebar}
+# 
+# \
+# This dashboard displays statistics for:
+# 
+# |              |                     |
+# |--------------|---------------------|
+# | **Hospital** | Grey Sloan Memorial |
+# | **Unit**     | Labor and Delivery  |
+# | **Month**    | `{r} time_period`   |
+# 
+# ------------------------------------------------------------------------
+# 
+# In `{r} time_period` the staff breakdown in the unit was as follows:
+# 
+# |                          |     |
+# |--------------------------|-----|
+# | **Attending physicians** |  14 |
+# | **Residents**            |  21 |
+# | **Nurses**               |  12 |
+# 
+# ------------------------------------------------------------------------
+# 
+# ::: {.callout-note collapse="true"}
+# ## Disclaimer
+# 
+# This is a fictional hospital. The data are simulated based on realistic birth characteristics and risk factors from [this report by the CDC](https://www.cdc.gov/nchs/data/nvsr/nvsr72/nvsr72-01.pdf).
+# :::
+
+
 # Schedules (Mobile) {scrolling="true"}
 
 ## row {.tabset}

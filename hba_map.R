@@ -59,11 +59,7 @@ thba <- thba %>%
   rename_all(tolower) %>% 
   mutate(iata = str_sub(hba, -3, -1))
 
-thba
-
 # Join HBA and PPB tables
-
-glimpse(airports)
 
 thba_map <- thba %>% 
   left_join(thba_ppb, by = "hba") %>% 
@@ -73,32 +69,28 @@ thba_map <- thba %>%
            status == 1 ~"blue",
            status == 2 ~"orange",
            status == 3 ~"red",
-           TRUE ~"blue"
+           TRUE ~"green"
          )) %>% 
   select(hba, status, status_color , ppb, Name, City, Latitude, Longitude, popup)
-
-thba_map
-
-glimpse(thba_map)
 
 # Draw the map
 # US Center 39.8283° N, 98.5795° W
 
-icons <- awesomeIcons(icon = "plane",
-                      markerColor = thba_map$status_color)
+icons <- awesomeIcons(markerColor = thba_map$status_color)
 
-thba_map %>% 
+phba_map <- thba_map %>% 
   leaflet() %>%
-    addTiles() %>% 
-    setView(lng = -98.5795,
-            lat = 39.283,
-            zoom = 4) %>% 
-    setMaxBounds(lng1 = -124.67,
-                 lng2 = -66.95,
-                 lat1 = 25.84,
-                 lat2 = 49.38) %>% 
+  addTiles() %>% 
+  setView(lng = -98.5795,
+          lat = 39.283,
+          zoom = 5) %>% 
+  setMaxBounds(lng1 = -130.0,
+               lng2 = -61.95,
+               lat1 = 23.0,
+               lat2 = 51.0) %>% 
   addAwesomeMarkers(~Longitude, ~Latitude,
                     icon = icons,
-                    heigh
                     popup = ~popup)
-  
+
+phba_map
+
