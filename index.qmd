@@ -672,7 +672,7 @@ tfleet_ratio_global %>%
 
 table_79p_join_dsr %>% 
   datatable(
-    colnames = c("Name", "Senioirty", "Fleet", "Schedule", "Seat", "Ext", "R", "Total (Ext +R)", "Pland Intl", "X"),
+    colnames = c("Name", "Senioirty", "Fleet", "Schedule", "Seat", "VED", "VAWD", "Total", "Plan Intl", "X"),
     filter = "top",
     options = list(
      # paging = TRUE,
@@ -695,7 +695,7 @@ table_79p_join_dsr %>%
 
 table_79p_join_ytd_dsr %>% 
   datatable(
-    colnames = c("Name", "Senioirty", "Fleet", "Schedult", "Seat", "Ext", "R", "Total (Ext +R)", "Pland Intl", "X"),
+    colnames = c("Name", "Senioirty", "Fleet", "Schedule", "Seat", "VED", "VAWD", "Total", "Plan Intl", "X"),
     filter = "top",
     options = list(
      # paging = TRUE,
