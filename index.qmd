@@ -40,7 +40,7 @@ roster <- read_excel(roster_file,
                      range = cell_cols(1:25)
                      )
 
-pull_date <- ymd("2024-05-23")
+pull_date <- ymd("2024-05-27")
 
 clean_roster <- roster %>%
   rename_with(~tolower(gsub(" ","_", .x))) %>% 
@@ -802,76 +802,41 @@ table_79p_join_ytd_dsr %>%
 ##### 2024 8&6 Line 2
 ![](images/2024_prod/8_6_Line_2.png)
 
-##### 3
-![](images/2024_prod/8_6_Line_3.png)
-
 ##### 4
 ![](images/2024_prod/8_6_Line_4.png)
-
-##### 5
-![](images/2024_prod/8_6_Line_5.png)
 
 ##### 6
 ![](images/2024_prod/8_6_Line_6.png)
 
-##### 7
-![](images/2024_prod/8_6_Line_7.png)
-
 ##### 9
 ![](images/2024_prod/8_6_Line_9.png)
-
-##### 10
-![](images/2024_prod/8_6_Line_10.png)
 
 ##### 11
 ![](images/2024_prod/8_6_Line_11.png)
 
-##### 12
-![](images/2024_prod/8_6_Line_12.png)
-
 ##### 13
 ![](images/2024_prod/8_6_Line_13.png)
-
-##### 14
-![](images/2024_prod/8_6_Line_14.png)
 
 #### column {.tabset}
 
 ##### 2025 8&6 Line 2
 ![](images/2025_prod/8_6_Line_2.png)
 
-##### 3
-![](images/2025_prod/8_6_Line_3.png)
-
 ##### 4
 ![](images/2025_prod/8_6_Line_4.png)
-
-##### 5
-![](images/2025_prod/8_6_Line_5.png)
 
 ##### 6
 ![](images/2025_prod/8_6_Line_6.png)
 
-##### 7
-![](images/2025_prod/8_6_Line_7.png)
-
 ##### 9
 ![](images/2025_prod/8_6_Line_9.png)
-
-##### 10
-![](images/2025_prod/8_6_Line_10.png)
 
 ##### 11
 ![](images/2025_prod/8_6_Line_11.png)
 
-##### 12
-![](images/2025_prod/8_6_Line_12.png)
-
 ##### 13
 ![](images/2025_prod/8_6_Line_13.png)
 
-##### 14
-![](images/2025_prod/8_6_Line_14.png)
 
 # HBA Map
 

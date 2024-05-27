@@ -5,14 +5,14 @@ library(readxl)
 
 t2024_86_lines <- read_excel("~/Library/CloudStorage/OneDrive-Personal/Documents/R Studio/Schedule Calendars/2024-04-04 R 7-7 Calendar.xlsx", 
                              sheet = "CalendR Days 2024 8_6",
-                             range = cell_cols(16:28))
+                             range = cell_cols(09:14))
 
 var_list <- t2024_86_lines %>% 
-  select(1:13) %>% 
+  select(1:6) %>% 
   colnames()
 
 
-for (i in 1:13) {
+for (i in 1:6) {
   
   # Variables
   
@@ -49,14 +49,14 @@ for (i in 1:13) {
 
 t2025_86_lines <- read_excel("~/Library/CloudStorage/OneDrive-Personal/Documents/R Studio/Schedule Calendars/2024-04-04 R 7-7 Calendar.xlsx", 
                              sheet = "CalendR Days 2025 8_6",
-                             range = cell_cols(18:30))
+                             range = cell_cols(11:16))
 
 var_list <- t2024_86_lines %>% 
-  select(1:13) %>% 
+  select(1:6) %>% 
   colnames()
 
 
-for (i in 1:13) {
+for (i in 1:6) {
   
   # Variables
   
