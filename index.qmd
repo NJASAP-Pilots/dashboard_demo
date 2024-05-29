@@ -468,7 +468,7 @@ total_hires <- join_hire_attrit %>%
 ggplotly(total_hires, tooltip = "text")
 ```
 
-# Attrition {scrolling="true"}
+# Attrition {scrolling="false"}
 
 ```{r}
 #| label: hire attrition values
