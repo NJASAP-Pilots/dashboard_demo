@@ -380,7 +380,7 @@ p_sic <- clean_roster %>%
   pull(p)
 ```
 
-## Row {height="10%"}
+## Row {height=10%}
 
 ```{r}
 #| content: valuebox
@@ -415,7 +415,7 @@ list(
 )
 ```
 
-## Row {height="\"30%"}
+## Row {height=30%}
 
 ```{r}
 #| title: "Total Pilots"
@@ -440,7 +440,7 @@ total_pilots <- monthly_total %>%
 ggplotly(total_pilots, tooltip = "text")
 ```
 
-## Row {height="\"30%"}
+## Row {height=30%}
 
 ```{r}
 #| title: "New Hires"
@@ -468,7 +468,7 @@ total_hires <- join_hire_attrit %>%
 ggplotly(total_hires, tooltip = "text")
 ```
 
-# Attrition
+# Attrition {scrolling="true"}
 
 ```{r}
 #| label: hire attrition values
@@ -490,7 +490,7 @@ net_staff <- n_hire-n_attrit
 
 ```
 
-## row {height="20%"}
+## row {height="10%"}
 
 ```{r}
 #| content: valuebox
@@ -525,7 +525,7 @@ list(
 )
 ```
 
-## row {height="80%"}
+## row {height="70%"}
 
 ```{r}
 
