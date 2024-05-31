@@ -69,7 +69,7 @@ for (i in 1:12) {
   
   imp.dates <- rep(NA, 365)
   imp.dates[line_data] <- line_legend
-  imp.dates[c(1, 20, 48, 57, 108, 110, 185, 244, 331, 359)] <- "NJA Holidays"
+  imp.dates[c(1, 20, 48, 108, 110, 146, 185, 244, 331, 359)] <- "NJA Holidays"
   
   calendR(year = 2025, ncol = 1, # Year
           title = cal_title,

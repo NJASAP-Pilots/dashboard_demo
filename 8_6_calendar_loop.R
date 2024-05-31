@@ -11,6 +11,8 @@ var_list <- t2024_86_lines %>%
   select(1:6) %>% 
   colnames()
 
+### 2024 ###
+
 
 for (i in 1:6) {
   
@@ -20,7 +22,7 @@ for (i in 1:6) {
   line <- var_list[i]
   line_legend <- sub("_"," ",line)
   line_no <- ifelse(nchar(line) == 7, str_sub(line,-2), str_sub(line,-1))
-  cal_title <- glue("2024 7&7-{line_no}")
+  cal_title <- glue("2024 8&6-{line_no}")
   save_as <- glue("8_6_{line}.png")
   
   imp.dates <- rep(NA, 366)
@@ -69,7 +71,7 @@ for (i in 1:6) {
   
   imp.dates <- rep(NA, 365)
   imp.dates[line_data] <- line_legend
-  imp.dates[c(1, 20, 48, 57, 108, 110, 185, 244, 331, 359)] <- "NJA Holidays"
+  imp.dates[c(1, 20, 48, 108, 110, 146, 185, 244, 331, 359)] <- "NJA Holidays"
   
   calendR(year = 2025, ncol = 1, # Year
           title = cal_title,
