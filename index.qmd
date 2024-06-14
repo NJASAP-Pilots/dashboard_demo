@@ -380,7 +380,7 @@ p_sic <- clean_roster %>%
   pull(p)
 ```
 
-## Row {height=10%}
+## Row {height="20%"}
 
 ```{r}
 #| content: valuebox
@@ -415,7 +415,7 @@ list(
 )
 ```
 
-## Row {height=30%}
+## Row
 
 ```{r}
 #| title: "Total Pilots"
@@ -440,7 +440,7 @@ total_pilots <- monthly_total %>%
 ggplotly(total_pilots, tooltip = "text")
 ```
 
-## Row {height=30%}
+## Row
 
 ```{r}
 #| title: "New Hires"
@@ -490,7 +490,7 @@ net_staff <- n_hire-n_attrit
 
 ```
 
-## row {height="10%"}
+## row {height="20%"}
 
 ```{r}
 #| content: valuebox
@@ -525,7 +525,7 @@ list(
 )
 ```
 
-## row {height="70%"}
+## row
 
 ```{r}
 
@@ -576,7 +576,7 @@ join_hire_attrit %>%
             name = "Attrited") %>% 
   layout( xaxis = list(title = "", showline = TRUE, tickangle = -45),
           yaxis = list(title = "Count", showline = TRUE),
-          title = list( text = paste0('NJASAP HIRING & ATTRITION',
+          title = list( text = paste0('NJASAP HIRING & ATTRITION (12-Months)',
                                     '<br>',
                                     '<sup><i>',
                                      hire_attrit_title,'</sup></i>'),
